@@ -15,18 +15,8 @@ library(primer.data)
 library(tidymodels)
 library(broom)
 library(gt)
+library(marginaleffects)
 ```
-
-Using data from over 1,000 candidates for governor in the United States since 1945, we aim to develop a model that estimates how age at election may relate to post-election longevity. However, since our data is limited to gubernatorial candidates, the model’s predictions may not generalize well to individuals running for other political offices or in different contexts. We model longevity after election, measured in years lived following a gubernatorial campaign, as a linear function of the candidate’s sex and their age at the time of election.
-
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
-
-with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
-
-
-$$
-\hat{Y}_i = 40 - 0.5 \cdot \text{age}_i - 2.3 \cdot \text{won}_i + 0.04 \cdot \text{year}_i
-$$
 
 ```{r}
 #| cache: true
@@ -40,6 +30,33 @@ fit_years <- linear_reg(engine = "lm") |>
   fit(lived_after ~ sex + election_age, data = x)
 
 ```
+
+
+```{r}
+library(marginaleffects)
+
+plot_predictions(fit_years, by = c("election_age", "sex")) +
+  labs(
+    title = "Predicted Years Lived After Election by Age and Sex",
+    subtitle = "Males tend to live longer after election, though gap shrinks with age",
+    caption = "Source: US gubernatorial candidates since 1945",
+    x = "Age at Election",
+    y = "Predicted Years Lived After Election"
+  ) +
+  theme_minimal()
+
+```
+
+Using data from over 1,000 candidates for governor in the United States since 1945, we aim to develop a model that estimates how age at election may relate to post-election longevity. However, since our data is limited to gubernatorial candidates, the model’s predictions may not generalize well to individuals running for other political offices or in different contexts. We model longevity after election, measured in years lived following a gubernatorial campaign, as a linear function of the candidate’s sex and their age at the time of election. For example, we estimate that a male candidate elected at age 50 will live approximately 45 years after election, with a 95% confidence interval ranging from 40 to 50 years, highlighting both the influence of age and sex on longevity and the degree of uncertainty in our forecasts.
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
+
+
+$$
+\hat{Y}_i = 40 - 0.5 \cdot \text{age}_i - 2.3 \cdot \text{won}_i + 0.04 \cdot \text{year}_i
+$$
 
 ```{r}
 #| cache: true
@@ -66,3 +83,4 @@ tidy(fit_years, conf.int = TRUE) |>
 
 
 ```
+
