@@ -2,5 +2,23 @@
 title: "Life Expectancy for Political Candidates"
 author: "Umaira"
 format: html
+execute: 
+  echo: false
 ---
+
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(primer.data)
+library(tidymodels)
+library(broom)
+```
+
+Using data from over 1,000 candidates for governor in the United States since 1945, we aim to develop a model that estimates how age at election may relate to post-election longevity. However, since our data is limited to gubernatorial candidates, the model’s predictions may not generalize well to individuals running for other political offices or in different contexts.
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_n X_n + \epsilon$$
+
+with $\epsilon \sim \mathcal{N}(0, \sigma^2)$.
 
